@@ -7,12 +7,19 @@
     <meta name="author" content="Clarisse Wibault">
     <title>Clarisse Wibault</title>
 
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/dist/external/tex-chtml.js"></script>
+
     <style>
         :root {
             --link-blue: #4f7ee8;
             --text: #111111;
             --muted: #555555;
             --light: #777777;
+            --box-blue-bg: #f4f7fe;
+            --box-blue-frame: #4f7ee8;
+            --box-sky-bg: #f0f5ff;
+            --box-sky-frame: #6496ff;
         }
 
         html,
@@ -23,7 +30,7 @@
             color: var(--text);
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             font-size: 15px;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         a {
@@ -51,31 +58,29 @@
         }
 
         .main_title {
-            font-size: 42px;
+            font-size: 38px;
             line-height: 1.2;
             font-weight: 700;
             letter-spacing: -0.5px;
-            margin: 0 0 8px;
+            margin: 0 0 12px;
         }
 
         .main_subtitle {
             color: var(--muted);
             font-size: 15px;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
 
         .intro-container {
-            display: flex;
-            gap: 24px;
-            align-items: flex-start;
             text-align: justify;
             margin-bottom: 24px;
         }
 
         .intro {
-            flex: 1;
             font-size: 15px;
-            line-height: 1.5;
+            line-height: 1.6;
+            max-width: 680px;
+            margin: 0 auto;
         }
 
         .intro p {
@@ -83,102 +88,100 @@
             margin-bottom: 16px;
         }
 
-        .images {
-            width: 100%;
-            height: auto;
-            border-radius: 40px;
-            object-fit: contain;
-        }
-
         .diagram-container {
             text-align: center;
-            margin: 24px 0;
+            margin: 28px auto;
+            max-width: 680px;
         }
 
         .diagram {
-            max-width: 90%;
+            max-width: 75%;
             height: auto;
-            border-radius: 8px;
+            border-radius: 6px;
         }
 
         .diagram-caption {
             font-size: 13px;
             color: var(--muted);
-            margin-top: 8px;
+            margin-top: 10px;
             font-style: italic;
+            line-height: 1.4;
+            padding: 0 20px;
         }
 
-        .links {
+        .pub-links {
             font-size: 15px;
             margin-top: 16px;
         }
 
-        .links span,
         .pub-links span {
             color: var(--light);
-            padding: 0 4px;
+            padding: 0 6px;
         }
 
         .section {
-            margin-top: 45px;
+            margin-top: 50px;
         }
 
         .section h2 {
-            font-size: 30px;
-            font-weight: 200;
-            letter-spacing: 0;
-            margin: 0 0 16px;
+            font-size: 26px;
+            font-weight: 300;
+            letter-spacing: -0.3px;
+            margin: 0 auto 18px;
+            max-width: 680px;
             border-bottom: 1px solid #eeeeee;
-            padding-bottom: 8px;
-        }
-
-        .subtitle {
-            font-size: 14px;
-            color: var(--muted);
-            margin-bottom: 16px;
-        }
-
-        .blog-item {
-            margin-bottom: 12px;
-            font-size: 15px;
-        }
-
-        .blog-date {
-            color: var(--muted);
+            padding-bottom: 6px;
         }
 
         .item-block {
             margin-bottom: 24px;
             text-align: justify;
+            max-width: 680px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .item-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 4px;
+        .item-block p {
+            margin-top: 0;
+            margin-bottom: 16px;
         }
 
-        .item-details {
-            padding-left: 18px;
+        .item-block ul,
+        .item-block ol {
+            margin-bottom: 16px;
+            padding-left: 24px;
+        }
+
+        .math-box {
+            background: var(--box-sky-bg);
+            border: 1px solid var(--box-sky-frame);
+            border-radius: 6px;
+            padding: 14px 18px;
+            margin: 20px auto;
+            max-width: 680px;
+        }
+
+        .math-box-title {
             font-size: 14px;
-            color: var(--text);
-        }
-
-        .authors,
-        .venue,
-        .pub-links {
-            margin-bottom: 2px;
-        }
-
-        .venue {
             font-weight: 700;
+            margin-bottom: 8px;
+            color: #2b579a;
         }
 
-        .date-line {
-            display: block;
-            color: var(--muted);
-            margin-top: 2px;
+        .taxonomy-box {
+            background: var(--box-blue-bg);
+            border: 1px solid var(--box-blue-frame);
+            border-radius: 6px;
+            padding: 14px 18px;
+            margin: 20px auto;
+            max-width: 680px;
+        }
+
+        .taxonomy-box-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text);
         }
 
         footer {
@@ -206,8 +209,8 @@
                 <span>|</span>
                 <a href="https://github.com/CWibault/mfax" target="_blank" rel="noopener noreferrer">MFAX Codebase</a>
                 <span>|</span>
-                <a href="https://colab.research.google.com/drive/1KiOu8Tr6WFP0jn3jZ9yl3wAPHwCePzsb" target="_blank"
-                    rel="noopener noreferrer">Interactive Colab Tutorial</a>
+                <a href="https://colab.research.google.com/drive/1KiOu8Tr6WFP0jn3jZ9yl3wAPHwCePzsb?usp=sharing"
+                    target="_blank" rel="noopener noreferrer">Interactive Colab Tutorial</a>
             </div>
             <br>
 
@@ -226,8 +229,9 @@
                     <ol>
                         <li><strong>Individual State-Space is Low Dimensional</strong>: the individual state-space, over
                             which the mean-field is defined, is low dimensional.</li>
-                        <li><strong>Public Information</strong>: As well as knowing their individual state, agents
-                            receive shared observations of the aggregate state.</li>
+                        <li><strong>Public Information</strong>: As well as knowing their individual state \(s_t\),
+                            agents
+                            receive shared observations of the aggregate state, \(o_t = \mathcal{U}(\mu_t, z_t)\).</li>
                     </ol>
 
                     <p>
@@ -257,8 +261,6 @@
                         while still allowing more realistic, history-dependent behaviour to be learned.
                     </p>
                 </div>
-
-                <img src="ClarisseWibault.jpeg" alt="Clarisse Wibault" class="images" style="max-width: 220px;">
             </div>
         </section>
 
@@ -267,23 +269,24 @@
             <div class="item-block">
                 <p>
                     <strong>Mean-Field Games (MFGs)</strong> provide a principled framework for modelling strategic
-                    interactions in large population systems, such as financial markets, epidemiology, and autonomous
-                    swarms. Rather than tracking an intractable network of individual pairs, MFGs simplify the setting
-                    by considering a continuum of <strong>infinitesimal agents</strong>, where each player interacts
-                    exclusively with the empirical state distribution of the population—the <strong>mean field</strong>.
+                    interactions in large population systems. Rather than tracking an intractable network of individual
+                    player-to-player dynamics, MFGs simplify the setting by considering a continuum of
+                    <strong>infinitesimal agents</strong>, where each player interacts exclusively with the empirical
+                    state distribution of the population—the <strong>mean field</strong> \(\mu_t\).
                 </p>
                 <p>
-                    However, real-world systems are rarely isolated. They are frequently exposed to macro-level
-                    environmental shocks that affect all individuals simultaneously, mathematically defined as
-                    <strong>Common Noise</strong>. Common noise induces systemic environmental transitions that
-                    dynamically shift the mean field over time. This creates a co-evolutionary loop: the aggregate
-                    distribution determines macroeconomic conditions and individual rewards, while individual policies
-                    simultaneously advance tomorrow's population state distribution.
+                    In applications, macro-level shocks introduce aggregate uncertainty that affects the entire
+                    population simultaneously, mathematically formalized as <strong>Common Noise</strong> \(z_t\). While
+                    individual idiosyncratic noise marginalises out, common noise induces stochastic evolution of the
+                    mean-field. The resulting Markovian aggregate state \((\mu_t, z_t)\) changes dynamically based on
+                    individual responses, creating a co-evolutionary loop.
                 </p>
+
                 <div class="diagram-container">
-                    <img src="mfg_common_noise.png" alt="Mean Field Game with Common Noise" class="diagram">
-                    <div class="diagram-caption">Figure 1: The co-evolutionary feedback loop of Mean Field Games
-                        operating under macro-level environmental transitions from common noise.</div>
+                    <img src="mfg_common_noise.png" alt="Mean Field Game with Common Noise" class="diagram"
+                        style="max-width: 60%;">
+                    <div class="diagram-caption">Figure 1: The co-evolutionary system feedback loop under macro-level
+                        environmental transitions from common noise.</div>
                 </div>
             </div>
         </section>
@@ -293,38 +296,68 @@
             <div class="item-block">
                 <p>
                     Algorithmic progress in MFGs has historically been limited due to a fundamental
-                    <strong>variance-tractability trade-off</strong>. Existing approaches generally separate into three
-                    paradigms:
+                    <strong>variance-tractability trade-off</strong>. We categorize existing policy evaluation options
+                    under a unified taxonomy mapping full, zero, or structural knowledge:
                 </p>
-                <ul>
-                    <li><strong>Dynamic Programming (Exact Methods):</strong> While exact, these methods suffer from the
-                        <strong>curse of dimensionality</strong>. They scale poorly as the individual state space or
-                        history horizons grow, quickly becoming computationally intractable.
-                    </li>
-                    <li><strong>Model-Free Reinforcement Learning:</strong> These scale effectively to large spaces
-                        using deep neural networks, but they suffer from exceptionally <strong>high variance</strong>.
-                        They require millions of environment steps to converge because they treat the entire population
-                        distribution as part of a model-free, high-variance state representation.</li>
-                    <li><strong>Hybrid Structural Methods (HSMs):</strong> HSMs reduce variance while maintaining
-                        tractability by leveraging low-dimensional individual state and action spaces alongside known
-                        transition dynamics. They compute the exact expected return conditioned on Monte Carlo rollouts
-                        of common noise.</li>
-                </ul>
+
+                <div class="taxonomy-box">
+                    <div class="taxonomy-box-title">1. Dynamic Programming (DP)</div>
+                    Leverages full access to both the individual dynamics \(\mathcal{T}\) and common noise dynamics
+                    \(\Xi\). It evaluates exact expected returns through the infinite-dimensional <strong>Master
+                        Equation</strong>:
+                    $$\small V(s,\boldsymbol{\mu},z) = \mathbb{E}_{a \sim \pi} \left[ R(s,a, \boldsymbol{\mu},z) +
+                    \gamma \mathbb{E}_{s' \sim \mathcal{T}, z' \sim \Xi} \left[V(s',\boldsymbol{\mu}',
+                    z')\right]\right]$$
+                    State-vectorized: \(\mathbf{v}_{\boldsymbol{\mu}, z} = \left[\boldsymbol{\Pi}_{\boldsymbol{\mu}, z}
+                    \odot \mathbf{R}_{\boldsymbol{\mu}, z}\right]\mathbf{1} + \gamma \mathbf{A}_{\boldsymbol{\mu}, z}
+                    \mathbb{E}_{z' \sim \Xi}\left[\mathbf{v}_{\boldsymbol{\mu}', z'} \right]\). DP eliminates sample
+                    variance but quickly becomes computationally intractable.
+                </div>
+
+                <div class="taxonomy-box">
+                    <div class="taxonomy-box-title">2. Reinforcement Learning (RL)</div>
+                    Treats transitions as a black box and relies purely on <strong>sampling</strong>. The policy is
+                    evaluated along sample pathways:
+                    $$\small V(s_{i,t},\boldsymbol{\mu}_t,z_t) = R(s_{i,t},a_{i,t}, \boldsymbol{\mu}_t,z_t) + \gamma
+                    V(s_{i,t+1},\boldsymbol{\mu}_{t+1},z_{t+1})$$
+                    RL scales to huge spaces using neural networks but suffers from exceptionally <strong>high
+                        variance</strong>.
+                </div>
+
+                <div class="taxonomy-box">
+                    <div class="taxonomy-box-title">3. Hybrid Structural Methods (HSMs)</div>
+                    The intermediate choice. HSMs combine structural knowledge of individual transition dynamics with
+                    Monte Carlo sampling over common noise:
+                    $$\small V(s,\boldsymbol{\mu}_t,z_t) = \mathbb{E}_{a \sim \pi} \left[ R(s,a, \boldsymbol{\mu}_t,z_t)
+                    + \gamma \mathbb{E}_{s' \sim \mathcal{T}} \left[V(s',\boldsymbol{\mu}_{t+1},z_{t+1})\right]\right]$$
+                    State-vectorized: \(\mathbf{v}_{\boldsymbol{\mu}_t, z_t} =
+                    \left[\boldsymbol{\Pi}_{\boldsymbol{\mu}_t, z_t} \odot \mathbf{R}_{\boldsymbol{\mu}_t,
+                    z_t}\right]\mathbf{1} + \gamma \mathbf{A}_{\boldsymbol{\mu}_t, z_t}
+                    \left[\mathbf{v}_{{\boldsymbol{\mu}}_{t+1}, z_{t+1}} \right]\). This lowers variance significantly
+                    while preserving tractability.
+                </div>
 
                 <p>
-                    The structural core of an HSM is determined by how it updates population states:
+                    <strong>Analytic vs. Sample-Based Mean-Field Updates:</strong> A structural method's core advantage
+                    stems from avoiding noisy multi-agent sampling. Instead of re-approximating density across sample
+                    paths, an <strong>Analytic Update</strong> uses a white-box matrix "Pushforward" wrapper to
+                    transition the vector distribution exactly:
                 </p>
-                <p>
-                    <strong>Sample-Based vs. Analytic Mean-Field Updates:</strong> Instead of approximating the
-                    population distribution by simulating thousands of individual agent rollouts (Sample-Based), an
-                    <strong>Analytic Update</strong> uses a white-box "Pushforward" wrapper. It propagates the entire
-                    population distribution matrix analytically through the transition dynamics, providing exact,
-                    low-variance policy evaluation gradients.
-                </p>
+            </div>
+
+            <div class="math-box">
+                <div class="math-box-title">Analytic Mean-Field Update (Fully Observable)</div>
+                $$\mu_{t+1}(s_{t+1}) = \iint \mathcal{T}(s_{t+1}\mid s_t, a_t, \mu_t, z_t)\pi(a_t \mid s_t, \mu_t,
+                z_t)\mu_t(s_t)\mathrm{d}a_t\mathrm{d}s_t$$
+                In vector-matrix form: \(\boldsymbol{\mu}_{t+1} = {\mathbf{A}^\pi_{\mu_t, z_t}}^\top\boldsymbol{\mu}_t\)
+            </div>
+
+            <div class="item-block">
                 <div class="diagram-container">
-                    <img src="mean_field_update.png" alt="Analytic vs Sample Based Mean Field Update" class="diagram">
-                    <div class="diagram-caption">Figure 2: Contrasting high-variance sample-based agent rollouts with
-                        the low-variance exact analytical pushforward of state distributions.</div>
+                    <img src="mean_field_update.png" alt="Analytic vs Sample Based Mean Field Update" class="diagram"
+                        style="max-width: 70%;">
+                    <div class="diagram-caption">Figure 2: Exact mathematical pushforward transitions versus noisy
+                        sample-based particle rollouts.</div>
                 </div>
             </div>
         </section>
@@ -333,18 +366,33 @@
             <h2>Partially Observable Mean Field Games with Common Noise</h2>
             <div class="item-block">
                 <p>
-                    Despite achieving an order-of-magnitude faster convergence and superior <strong>sample
-                        efficiency</strong>, HSMs have been strictly restricted to <strong>fully observable
-                        settings</strong>. This assumes that individual agents can perfectly observe the true global
-                    population distribution. In realistic multi-agent settings like macroeconomics or communication
-                    networks, this assumption fails; agents only operate under <strong>partial observability</strong>.
+                    Despite achieving superior <strong>sample efficiency</strong>, HSMs have been historically confined
+                    to <strong>fully observable settings</strong>, where every agent perfectly knows the global
+                    population distribution \(\mu_t\). In realistic economic networks or structural markets, this
+                    assumption fails; agents face <strong>partial observability</strong>.
                 </p>
                 <p>
-                    Introducing partial observability into HSMs usually causes immediate mathematical intractability.
-                    Because every unique sequence of private observations yields a distinct individual history, the
-                    space of possible individual belief trajectories explodes exponentially over time. This history
-                    explosion shatters the unified population state mesh required to compute exact, analytical expected
-                    returns.
+                    Extending HSMs to partially observable settings causes an immediate <strong>curse of
+                        dimensionality</strong>. Because agents select actions based on their
+                    Individual-Action-Observation Histories (IAOH) \(\tau_t\), calculating the update requires
+                    maintaining an aggregate state matrix distribution \(\tilde{\mu}_t\) over the entire history space
+                    \(\mathcal{H}_t\):
+                </p>
+            </div>
+
+            <div class="math-box">
+                <div class="math-box-title">Analytic Mean-Field Update (Partially Observable)</div>
+                $$\mu_{t+1}(s_{t+1}) = \iint \mathcal{T}(s_{t+1} \mid s_t, a_t, \mu_t, z_t)\pi(a_t \mid \tau_t)
+                \tilde{\mu}_t(\tau_t) \mathrm{d}a_t \mathrm{d}\tau_t$$
+                $$\tilde{\mu}_{t+1}(\tau_{t+1}) = \mathcal{U}(o_{t+1} \mid s_{t+1}, \mu_{t+1},
+                z_{t+1})\mathcal{T}(s_{t+1} \mid s_t, a_t, \mu_t, z_t)\pi(a_t \mid \tau_t) \tilde{\mu}_t(\tau_t)$$
+            </div>
+
+            <div class="item-block">
+                <p>
+                    Because the space of individual observation paths \(\mathcal{H}_t\) grows exponentially with time,
+                    propagating these equations explicitly becomes totally intractable, breaking down the unified state
+                    mesh required by HSMs.
                 </p>
             </div>
         </section>
@@ -353,36 +401,36 @@
             <h2>Recurrent Structural Policy Gradient</h2>
             <div class="item-block">
                 <p>
-                    Our proposed framework, <strong>Recurrent Structural Policy Gradient (RSPG)</strong>, is the first
-                    history-aware HSM designed to break this intractability in settings with public information.
+                    Our framework, <strong>Recurrent Structural Policy Gradient (RSPG)</strong>, breaks this
+                    computational bottleneck under public information.
                 </p>
                 <p>
-                    <strong>The Fundamental Idea:</strong> By exploiting the presence of shared public observations, we
-                    can safely restrict the long-term memory of agents to the <strong>history of shared public
-                        observations</strong>. Because every player conditions their memory on the exact same stream of
-                    public metadata, the infinite tree of individual histories collapses back into a <strong>single,
-                        shared historical trajectory</strong>. This allows agents to maintain a shared recurrent
-                    <strong>belief distribution</strong> over hidden macroeconomic states, preserving the tractability
-                    of the analytic mean-field update.
+                    <strong>The Structural Principle:</strong> Because private states are known and public metadata
+                    observations are shared across the system, agents only need to maintain a recurrent <strong>belief
+                        distribution</strong> over the aggregate common noise state. Long-term individual memory can
+                    safely be restricted strictly to the <strong>history of shared public observations</strong>
+                    \(o_{0:t}\). This ensures that the infinite branching tree of individual trajectories collapses back
+                    down into a <strong>single, shared historical trajectory</strong>, preserving the exact low-variance
+                    benefits of analytic structural methods.
+                </p>
+                <p>
+                    <strong>The Practical Implementation:</strong> We built <strong>MFAX</strong>, an open-source,
+                    highly accelerated JAX framework to translate this concept into software. MFAX harnesses functional
+                    programming primitives like <code>jax.vmap</code> to perform fast piecewise-linear density
+                    interpolation over structural grids, and utilizes <code>jax.lax.scan</code> to map recurrent history
+                    gradients sequentially over long operational horizons.
                 </p>
 
-                <p>
-                    <strong>The Practical Implementation:</strong> To facilitate future research into these settings, we
-                    introduce <strong>MFAX</strong>, our open-source, high-performance JAX-based framework for MFGs.
-                    MFAX leverages functional programming primitives like <code>jax.vmap</code> to map across discrete
-                    individual state meshes via piecewise-linear interpolation, and uses <code>jax.lax.scan</code> to
-                    efficiently optimize history-dependent recurrent neural network policies over long horizons.
-                </p>
                 <div class="diagram-container">
-                    <img src="rspg_architecture.png" alt="RSPG Architecture" class="diagram">
-                    <div class="diagram-caption">Figure 3: Algorithmic architecture of RSPG tracking structural
-                        transitions and computing exact policy gradients conditioned on shared observation histories.
-                    </div>
+                    <img src="rspg_architecture.png" alt="RSPG Architecture" class="diagram" style="max-width: 70%;">
+                    <div class="diagram-caption">Figure 3: RSPG structural design isolating individual recurrent updates
+                        on top of a single shared observation history stream.</div>
                 </div>
+
                 <p>
-                    By restructuring policy gradients around shared public histories, RSPG maintains excellent sample
-                    efficiency while allowing agents to successfully learn realistic, history-dependent behaviors in
-                    complex partially observable economies.
+                    By structuring policy gradients around shared public observation pipelines, RSPG bridges
+                    history-aware multi-agent systems and exact structural reinforcement learning, enabling fast,
+                    low-variance convergence in highly complex structural games.
                 </p>
             </div>
         </section>

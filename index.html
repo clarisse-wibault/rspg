@@ -7,6 +7,18 @@
     <meta name="author" content="Clarisse Wibault">
     <title>Clarisse Wibault</title>
 
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['$$', '$$']],
+                processEscapes: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/dist/external/tex-chtml.js"></script>
 
@@ -230,8 +242,8 @@
                         <li><strong>Individual State-Space is Low Dimensional</strong>: the individual state-space, over
                             which the mean-field is defined, is low dimensional.</li>
                         <li><strong>Public Information</strong>: As well as knowing their individual state \(s_t\),
-                            agents
-                            receive shared observations of the aggregate state, \(o_t = \mathcal{U}(\mu_t, z_t)\).</li>
+                            agents receive shared observations of the aggregate state, \(o_t = \mathcal{U}(\mu_t,
+                            z_t)\).</li>
                     </ol>
 
                     <p>
@@ -245,9 +257,7 @@
 
                     <p>
                         The main idea is that, because individual states are <em>known</em>, and observations of
-                        the
-                        aggregate state are <em>shared</em>, memory can be restricted to the <em>history of
-                            shared
+                        the aggregate state are <em>shared</em>, memory can be restricted to the <em>history of shared
                             aggregate observations</em>.
                         The intuition is that since agents directly observe their individual states, they only need to
                         maintain a <em>belief</em> in the aggregate state.
@@ -256,9 +266,9 @@
                     </p>
 
                     <p>
-                        This way, <strong>RSPGmaintains the same rate of convergence as memoryless Hybrid Structural
-                            Methods,
-                            while still allowing more realistic, history-dependent behaviour to be learned</strong>.
+                        This way, <strong>RSPG maintains the same rate of convergence as memoryless Hybrid Structural
+                            Methods, while still allowing more realistic, history-dependent behaviour to be
+                            learned</strong>.
                     </p>
                 </div>
             </div>
@@ -277,14 +287,13 @@
                 </p>
                 <p>
                     In MFGs with <em>common noise</em>, uncertainty enters through aggregate shocks that affect the
-                    entire population
-                    simultaneously. While idiosyncratic noise marginalises out at the population level, common noise
-                    induces stochastic
-                    evolution of the mean-field. The resulting Markovian <em>aggregate state</em> \((\mu_t, z_t)\)
-                    consists of the mean-field
-                    \(\mu_t\), a distribution over the individual state space \(\mathcal{S}\), and the common noise
-                    \(z_t\), which captures all
-                    remaining state components.
+                    entire population simultaneously. While idiosyncratic noise marginalises out at the population
+                    level, common noise
+                    induces stochastic evolution of the mean-field. The resulting Markovian <em>aggregate state</em>
+                    \((\mu_t, z_t)\)
+                    consists of the mean-field \(\mu_t\), a distribution over the individual state space
+                    \(\mathcal{S}\), and the common noise
+                    \(z_t\), which captures all remaining state components.
                 </p>
 
                 <div class="diagram-container">
@@ -292,8 +301,8 @@
                         style="max-width: 60%;">
                     <div class="diagram-caption">Figure 1: <strong>Top Left:</strong> the mean-field is a distribution
                         over a (low-dimensional) individual state space. <strong>Top Right:</strong> the common noise
-                        \(z_t\) can be arbitrarilty high-dimensional, and is a particular instantiation that is
-                        <em>common</em> to all agents</em>. <strong>Bottom Left:</strong> an individual agent is in a
+                        \(z_t\) can be arbitrarily high-dimensional, and is a particular instantiation that is
+                        <em>common</em> to all agents. <strong>Bottom Left:</strong> an individual agent is in a
                         certain state \(s_t\), takes an action \(a_t\), and transitions to a new state, additionally
                         conditioned on the aggregate state \((\mu_t, z_t)\).
                     </div>
@@ -302,12 +311,12 @@
         </section>
 
         <section class="section">
-            <h2>Dynamic Programming vs. RL vs. Hybrid Structural Methods</h2>
+            <h2>Dynamic Programming, Reinforcement Learning &amp; Hybrid Structural Methods</h2>
             <div class="item-block">
                 <p>
                     In MFGs with common noise, the policy is usually updated by computing the value associated with the
-                    current policy and then taking a greedy step to
-                    improve that policy. This is a <em>sample-based</em> update, and is computationally tractable.
+                    current policy and then taking a greedy step to improve that policy. This is a <em>sample-based</em>
+                    update, and is computationally tractable.
                 </p>
 
                 <div class="taxonomy-box">
@@ -315,9 +324,9 @@
                     Leverages full access to both the individual dynamics \(\mathcal{T}\) and common noise dynamics
                     \(\Xi\). It evaluates exact expected returns through the infinite-dimensional <strong>Master
                         Equation</strong>:
-                    $$\small V(s,\boldsymbol{\mu},z) = \mathbb{E}_{a \sim \pi} \left[ R(s,a, \boldsymbol{\mu},z) +
+                    $$ V(s,\boldsymbol{\mu},z) = \mathbb{E}_{a \sim \pi} \left[ R(s,a, \boldsymbol{\mu},z) +
                     \gamma \mathbb{E}_{s' \sim \mathcal{T}, z' \sim \Xi} \left[V(s',\boldsymbol{\mu}',
-                    z')\right]\right]$$
+                    z')\right]\right] $$
                     State-vectorized: \(\mathbf{v}_{\boldsymbol{\mu}, z} = \left[\boldsymbol{\Pi}_{\boldsymbol{\mu}, z}
                     \odot \mathbf{R}_{\boldsymbol{\mu}, z}\right]\mathbf{1} + \gamma \mathbf{A}_{\boldsymbol{\mu}, z}
                     \mathbb{E}_{z' \sim \Xi}\left[\mathbf{v}_{\boldsymbol{\mu}', z'} \right]\). DP eliminates sample
@@ -328,8 +337,8 @@
                     <div class="taxonomy-box-title">2. Reinforcement Learning (RL)</div>
                     Treats transitions as a black box and relies purely on <strong>sampling</strong>. The policy is
                     evaluated along sample pathways:
-                    $$\small V(s_{i,t},\boldsymbol{\mu}_t,z_t) = R(s_{i,t},a_{i,t}, \boldsymbol{\mu}_t,z_t) + \gamma
-                    V(s_{i,t+1},\boldsymbol{\mu}_{t+1},z_{t+1})$$
+                    $$ V(s_{i,t},\boldsymbol{\mu}_t,z_t) = R(s_{i,t},a_{i,t}, \boldsymbol{\mu}_t,z_t) + \gamma
+                    V(s_{i,t+1},\boldsymbol{\mu}_{t+1},z_{t+1}) $$
                     RL scales to huge spaces using neural networks but suffers from exceptionally <strong>high
                         variance</strong>.
                 </div>
@@ -340,8 +349,9 @@
                     modeling assumption) and low-dimensional individual state-spaces to compute the exact expectation
                     over individual state transitions, thereby lowering variance. However, to maintain tractability,
                     they sample common noise:
-                    $$\small V(s,\boldsymbol{\mu}_t,z_t) = \mathbb{E}_{a \sim \pi} \left[ R(s,a, \boldsymbol{\mu}_t,z_t)
-                    + \gamma \mathbb{E}_{s' \sim \mathcal{T}} \left[V(s',\boldsymbol{\mu}_{t+1},z_{t+1})\right]\right]$$
+                    $$ V(s,\boldsymbol{\mu}_t,z_t) = \mathbb{E}_{a \sim \pi} \left[ R(s,a, \boldsymbol{\mu}_t,z_t)
+                    + \gamma \mathbb{E}_{s' \sim \mathcal{T}} \left[V(s',\boldsymbol{\mu}_{t+1},z_{t+1})\right]\right]
+                    $$
                     State-vectorized: \(\mathbf{v}_{\boldsymbol{\mu}_t, z_t} =
                     \left[\boldsymbol{\Pi}_{\boldsymbol{\mu}_t, z_t} \odot \mathbf{R}_{\boldsymbol{\mu}_t,
                     z_t}\right]\mathbf{1} + \gamma \mathbf{A}_{\boldsymbol{\mu}_t, z_t}

@@ -205,12 +205,12 @@
             <div class="main_subtitle">May 2026</div>
 
             <div class="pub-links">
-                <a href="https://arxiv.org/" target="_blank" rel="noopener noreferrer">Paper (arXiv)</a>
+                <a href="https://arxiv.org/" target="_blank" rel="noopener noreferrer">Paper</a>
                 <span>|</span>
-                <a href="https://github.com/CWibault/mfax" target="_blank" rel="noopener noreferrer">MFAX Codebase</a>
+                <a href="https://github.com/CWibault/mfax" target="_blank" rel="noopener noreferrer">Code</a>
                 <span>|</span>
                 <a href="https://colab.research.google.com/drive/1KiOu8Tr6WFP0jn3jZ9yl3wAPHwCePzsb?usp=sharing"
-                    target="_blank" rel="noopener noreferrer">Interactive Colab Tutorial</a>
+                    target="_blank" rel="noopener noreferrer">Google Colab</a>
             </div>
             <br>
 
@@ -235,8 +235,8 @@
                     </ol>
 
                     <p>
-                        The first assumption is necessary to apply Hybrid Structural Methods in general, not just
-                        <strong>Recurrent</strong> Structural Policy Gradient.
+                        The first assumption is necessary for Hybrid Structural Methods in general, not just
+                        <em>Recurrent</em> Structural Policy Gradient.
                         For example, the mean-field might be two-dimensional, over wealth and income in macroeconomics,
                         or energy and interference in communication systems, or one-dimensional, over infection status
                         in epidemiology. Regarding the second assumption, the public information might be stock prices,
@@ -244,21 +244,21 @@
                     </p>
 
                     <p>
-                        The main idea is that, because individual states are <strong>known</strong>, and observations of
+                        The main idea is that, because individual states are <em>known</em>, and observations of
                         the
-                        aggregate state are <strong>shared</strong>, memory can be restricted to the <strong>history of
+                        aggregate state are <em>shared</em>, memory can be restricted to the <em>history of
                             shared
-                            aggregate observations</strong>.
+                            aggregate observations</em>.
                         The intuition is that since agents directly observe their individual states, they only need to
-                        maintain a <strong>belief</strong> in the aggregate state.
-                        The main benefit is that we only have <strong>one history</strong>, rather than a number of
-                        possible
+                        maintain a <em>belief</em> in the aggregate state.
+                        The main benefit is that we only have <em>one history</em>, rather than a number of
                         histories that grows exponentially with time.
                     </p>
 
                     <p>
-                        This way, RSPG maintains the same rate of convergence as memoryless Hybrid Structural Methods,
-                        while still allowing more realistic, history-dependent behaviour to be learned.
+                        This way, <strong>RSPGmaintains the same rate of convergence as memoryless Hybrid Structural
+                            Methods,
+                            while still allowing more realistic, history-dependent behaviour to be learned</strong>.
                     </p>
                 </div>
             </div>
@@ -268,25 +268,35 @@
             <h2>Mean Field Games with Common Noise</h2>
             <div class="item-block">
                 <p>
-                    <strong>Mean-Field Games (MFGs)</strong> provide a principled framework for modelling strategic
-                    interactions in large population systems. Rather than tracking an intractable network of individual
-                    player-to-player dynamics, MFGs simplify the setting by considering a continuum of
-                    <strong>infinitesimal agents</strong>, where each player interacts exclusively with the empirical
-                    state distribution of the population—the <strong>mean field</strong> \(\mu_t\).
+                    <strong>Mean-Field Games (MFGs)</strong> provide a principled framework for modelling
+                    interactions in large population systems. By assuming that individuals respond only to the
+                    <em>aggregate behaviour</em> of other agents and that they share the same state-conditioned
+                    objective, reward, transition, and observation functions, MFGs reduce the analysis of a large
+                    population model to the interaction between a <em>stand-in</em> agent and the <em>mean field</em>
+                    \(\mu_t\).
                 </p>
                 <p>
-                    In applications, macro-level shocks introduce aggregate uncertainty that affects the entire
-                    population simultaneously, mathematically formalized as <strong>Common Noise</strong> \(z_t\). While
-                    individual idiosyncratic noise marginalises out, common noise induces stochastic evolution of the
-                    mean-field. The resulting Markovian aggregate state \((\mu_t, z_t)\) changes dynamically based on
-                    individual responses, creating a co-evolutionary loop.
+                    In MFGs with <em>common noise</em>, uncertainty enters through aggregate shocks that affect the
+                    entire population
+                    simultaneously. While idiosyncratic noise marginalises out at the population level, common noise
+                    induces stochastic
+                    evolution of the mean-field. The resulting Markovian <em>aggregate state</em> \((\mu_t, z_t)\)
+                    consists of the mean-field
+                    \(\mu_t\), a distribution over the individual state space \(\mathcal{S}\), and the common noise
+                    \(z_t\), which captures all
+                    remaining state components.
                 </p>
 
                 <div class="diagram-container">
                     <img src="mfg_common_noise.png" alt="Mean Field Game with Common Noise" class="diagram"
                         style="max-width: 60%;">
-                    <div class="diagram-caption">Figure 1: The co-evolutionary system feedback loop under macro-level
-                        environmental transitions from common noise.</div>
+                    <div class="diagram-caption">Figure 1: <strong>Top Left:</strong> the mean-field is a distribution
+                        over a (low-dimensional) individual state space. <strong>Top Right:</strong> the common noise
+                        \(z_t\) can be arbitrarilty high-dimensional, and is a particular instantiation that is
+                        <em>common</em> to all agents</em>. <strong>Bottom Left:</strong> an individual agent is in a
+                        certain state \(s_t\), takes an action \(a_t\), and transitions to a new state, additionally
+                        conditioned on the aggregate state \((\mu_t, z_t)\).
+                    </div>
                 </div>
             </div>
         </section>
@@ -295,9 +305,9 @@
             <h2>Dynamic Programming vs. RL vs. Hybrid Structural Methods</h2>
             <div class="item-block">
                 <p>
-                    Algorithmic progress in MFGs has historically been limited due to a fundamental
-                    <strong>variance-tractability trade-off</strong>. We categorize existing policy evaluation options
-                    under a unified taxonomy mapping full, zero, or structural knowledge:
+                    In MFGs with common noise, the policy is usually updated by computing the value associated with the
+                    current policy and then taking a greedy step to
+                    improve that policy. This is a <em>sample-based</em> update, and is computationally tractable.
                 </p>
 
                 <div class="taxonomy-box">
@@ -326,15 +336,16 @@
 
                 <div class="taxonomy-box">
                     <div class="taxonomy-box-title">3. Hybrid Structural Methods (HSMs)</div>
-                    The intermediate choice. HSMs combine structural knowledge of individual transition dynamics with
-                    Monte Carlo sampling over common noise:
+                    Recent <strong>Hybrid Structural Methods</strong> make use of known structure (known under any
+                    modeling assumption) and low-dimensional individual state-spaces to compute the exact expectation
+                    over individual state transitions, thereby lowering variance. However, to maintain tractability,
+                    they sample common noise:
                     $$\small V(s,\boldsymbol{\mu}_t,z_t) = \mathbb{E}_{a \sim \pi} \left[ R(s,a, \boldsymbol{\mu}_t,z_t)
                     + \gamma \mathbb{E}_{s' \sim \mathcal{T}} \left[V(s',\boldsymbol{\mu}_{t+1},z_{t+1})\right]\right]$$
                     State-vectorized: \(\mathbf{v}_{\boldsymbol{\mu}_t, z_t} =
                     \left[\boldsymbol{\Pi}_{\boldsymbol{\mu}_t, z_t} \odot \mathbf{R}_{\boldsymbol{\mu}_t,
                     z_t}\right]\mathbf{1} + \gamma \mathbf{A}_{\boldsymbol{\mu}_t, z_t}
-                    \left[\mathbf{v}_{{\boldsymbol{\mu}}_{t+1}, z_{t+1}} \right]\). This lowers variance significantly
-                    while preserving tractability.
+                    \left[\mathbf{v}_{{\boldsymbol{\mu}}_{t+1}, z_{t+1}} \right]\).
                 </div>
 
                 <p>

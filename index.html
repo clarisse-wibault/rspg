@@ -295,8 +295,7 @@
                     level, common noise induces <strong>stochastic evolution</strong> of the mean-field. The resulting
                     Markovian <strong>aggregate state</strong> \((\mu_t, z_t)\) consists of the mean-field \(\mu_t\), a
                     distribution over the individual state space \(\mathcal{S}\), and the common noise \(z_t\), which
-                    captures all
-                    remaining state components.
+                    captures all remaining state components.
                 </p>
 
                 <div class="diagram-container">
@@ -318,8 +317,7 @@
             <div class="item-block">
                 <p>
                     Keeping track of the mean-field distribution is a key challenge in MFGs: the mean-field must be
-                    updated at
-                    every time-step. Two main approaches are used to update the mean-field.
+                    updated at every time-step. Two main approaches are used to update the mean-field.
                 </p>
 
                 <p>
@@ -337,24 +335,22 @@
                 </div>
 
                 <p>Or, in vector-matrix form:</p>
-                <div>
+                <div style="margin-bottom: 16px;">
                     $$\boldsymbol{\mu}_{t+1} = {\mathbf{A}^\pi_{\mu_t, z_t}}^\top\boldsymbol{\mu}_t$$
                 </div>
 
                 <p>
                     Note that, to remain tractable, this requires low-dimensional individual state and action spaces and
                     relatively sparse transition operators. In practice, and where possible, most MFG libraries use
-                    analytic
-                    mean-field updates.
+                    analytic mean-field updates.
                 </p>
 
                 <p>
                     <strong>Sample-Based Mean-Field Update</strong> <br>
                     Sample-based methods repeatedly re-approximate the mean-field distribution based on a
-                    <strong>population
-                        of agents</strong>:
+                    <strong>population of agents</strong>:
                 </p>
-                <div>
+                <div style="margin-bottom: 16px;">
                     $$ \boldsymbol{\mu}_t(s) \approx \frac{1}{N} \sum_{i = 1}^{N} \delta( s - s_{i,t}) $$
                 </div>
 
@@ -396,21 +392,9 @@
                     <div>
                         $$ V(s,\boldsymbol{\mu},z) = \mathbb{E}_{a \sim \pi} \left[ R(s,a, \boldsymbol{\mu},z) +
                         \gamma \mathbb{E}_{s' \sim \mathcal{T}, z' \sim \Xi} \left[V(s',\boldsymbol{\mu}',
-                        z')\right]\right] $$
+                        z')\right]\right] $$.
                     </div>
-                    Or, in state-vectorised form: \(\mathbf{v}_{\boldsymbol{\mu}, z} =
-                    \left[\boldsymbol{\Pi}_{\boldsymbol{\mu}, z}
-                    \odot \mathbf{R}_{\boldsymbol{\mu}, z}\right]\mathbf{1} + \gamma \mathbf{A}_{\boldsymbol{\mu}, z}
-                    \mathbb{E}_{z' \sim \Xi}\left[\mathbf{v}_{\boldsymbol{\mu}', z'} \right]\), where
-                    $\mathbf{v}_{\boldsymbol{\mu}, z}$ is an $\lvert \mathcal{S}\rvert$-length vector with the values
-                    $V(s, \boldsymbol{\mu}, z)$ of each individual state $s \in \mathcal{S}$, and
-                    $\boldsymbol{\Pi}_{\boldsymbol{\mu}, z}$ and
-                    $\mathbf{R}_{\boldsymbol{\mu}, z}$ are $| \mathcal{S} | \times | \mathcal{A} |$ matrices whose $(s,
-                    a)^\text{th}$ elements are $\pi(a \mid s, \boldsymbol{\mu}, z)$ and $R(s,a,\boldsymbol{\mu},z)$
-                    respectively. Note
-                    that premultiplying by $\mathbf{A}^\pi_{\boldsymbol{\mu}, z}$ computes the expectation over next
-                    states.
-                    <br><br>
+                    <br>
                     By evaluating the policy using exact expected returns, the Bellman equation or
                     <em>Master Equation</em> eliminates sample variance. But, in practice, integrating
                     over all possible realisations of the mean-field due to different realisations of the common noise
@@ -447,12 +431,8 @@
                     <div>
                         $$ V(s,\boldsymbol{\mu}_t,z_t) = \mathbb{E}_{a \sim \pi} \left[ R(s,a, \boldsymbol{\mu}_t,z_t)
                         + \gamma \mathbb{E}_{s' \sim \mathcal{T}}
-                        \left[V(s',\boldsymbol{\mu}_{t+1},z_{t+1})\right]\right] $$
+                        \left[V(s',\boldsymbol{\mu}_{t+1},z_{t+1})\right]\right] $$.
                     </div>
-                    In state-vectorised form: \(\mathbf{v}_{\boldsymbol{\mu}_t, z_t} =
-                    \left[\boldsymbol{\Pi}_{\boldsymbol{\mu}_t, z_t} \odot \mathbf{R}_{\boldsymbol{\mu}_t,
-                    z_t}\right]\mathbf{1} + \gamma \mathbf{A}_{\boldsymbol{\mu}_t, z_t}
-                    \left[\mathbf{v}_{{\boldsymbol{\mu}}_{t+1}, z_{t+1}} \right]\).
                 </div>
             </div>
         </section>
@@ -487,8 +467,7 @@
                 <p>
                     The issue is that <strong>the number of possible histories grows exponentially with
                         time</strong> such that updating the mean-field and evaluating the policy would require
-                    enumerating
-                    an exponentially branching history tree.
+                    enumerating an exponentially branching history tree.
                 </p>
             </div>
         </section>
@@ -497,9 +476,9 @@
             <h2>Recurrent Structural Policy Gradient</h2>
             <div class="item-block">
                 <p>
-                    Our key insight is that, under public information, memory can be restricted to the history of shared
-                    aggregate observations, such that policies condition on $s_t,
-                    o_{0:t}$ rather than $\tau_t$. Since agents directly observe their individual state, they only need
+                    Our key insight is that, under public information, <strong>memory can be restricted to the history
+                        of shared aggregate observations</strong>, such that policies condition on $s_t, o_{0:t}$ rather
+                    than $\tau_t$. Since agents directly observe their individual state, they only need
                     to maintain a <strong>belief</strong> in the aggregate state. This means that conditioning on
                     individual histories provides no additional information.
                 </p>
@@ -524,13 +503,14 @@
                 <div class="diagram-container">
                     <img src="rspg_architecture.png" alt="RSPG Architecture" class="diagram" style="max-width: 70%;">
                     <div class="diagram-caption">Figure 3: RSPG architecture: only the observations of the aggregate
-                        state are fed into the recurrent encoder such that the hidden state is independent of the
-                        individual state. This means that all agents share the same recurrent embedding at each
-                        timestep. In practice, we compute this embedding once per timestep and broadcast it to all
+                        state are fed into the recurrent encoder such that <strong>the hidden state is independent of
+                            the individual state</strong>. This means that all agents share the same recurrent embedding
+                        at
+                        each timestep. In practice, we compute this embedding once per timestep and broadcast it to all
                         states, so that the additional cost of RSPG over Structural Policy Gradient (a memoryless HSM)
-                        is a single GRU update per timestep, independent of the number of states. For continuous
-                        actions, we parameterise an underlying continuous distribution to maintain ordinality in the
-                        action space.</div>
+                        is a single GRU update per timestep, independent of the number of states. <strong>For continuous
+                            actions, we parameterise an underlying continuous distribution</strong> to maintain
+                        ordinality in the action space.</div>
                 </div>
                 <p>
                     <strong>In this way, RSPG is a history-aware HSM. This means that, while learning a
@@ -555,8 +535,8 @@
                     </li>
                     <li>
                         <strong>Distinguishes between HSMs</strong>, with white-box access to individual state
+                        transition dynamics, and <strong>RL-based methods</strong>, without access to individual state
                         transition
-                        dynamics, and <strong>RL-based methods</strong>, without access to individual state transition
                         dynamics.
                     </li>
                     <li>

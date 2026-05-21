@@ -233,12 +233,21 @@
             <div class="intro-container">
                 <div class="intro">
                     <p>
-                        In this Blog Post, I will introduce <strong>Recurrent Structural Policy Gradient</strong>
+                        In this post, I will introduce <strong>Recurrent Structural Policy Gradient</strong>
                         (RSPG), a <strong>Hybrid Structural Method</strong> (defined below)
                         that learns history-dependent policies for <strong>Partially Observable Mean Field Games with
                             Public Information</strong>.
                     </p>
-
+                    <p>
+                        <strong>Mean-Field Games (MFGs)</strong> provide a principled framework for modelling
+                        interactions in large population systems. By assuming that individuals respond only to the
+                        <strong>aggregate behaviour</strong> of other agents and that they share the same
+                        state-conditioned
+                        objective, reward, transition, and observation functions, MFGs reduce the analysis of a large
+                        population model to the interaction between a <strong>stand-in</strong> agent and the
+                        <strong>mean
+                            field</strong> \(\mu_t\).
+                    </p>
                     <p>
                         RSPG leverages two assumptions that are natural in many of the situations that we want to model.
                     </p>
@@ -282,17 +291,10 @@
             <h2>Mean Field Games with Common Noise</h2>
             <div class="item-block">
                 <p>
-                    <strong>Mean-Field Games (MFGs)</strong> provide a principled framework for modelling
-                    interactions in large population systems. By assuming that individuals respond only to the
-                    <strong>aggregate behaviour</strong> of other agents and that they share the same state-conditioned
-                    objective, reward, transition, and observation functions, MFGs reduce the analysis of a large
-                    population model to the interaction between a <strong>stand-in</strong> agent and the <strong>mean
-                        field</strong> \(\mu_t\).
-                </p>
-                <p>
                     In MFGs with <strong>common noise</strong>, uncertainty enters through aggregate shocks that affect
                     the entire population simultaneously. While idiosyncratic noise marginalises out at the population
-                    level, common noise induces stochastic evolution of the mean-field. The resulting Markovian
+                    level, common noise induces <strong>stochastic evolution</strong> of the mean-field. The resulting
+                    Markovian
                     <strong>aggregate state</strong> \((\mu_t, z_t)\) consists of the mean-field \(\mu_t\), a
                     distribution
                     over the individual state space \(\mathcal{S}\), and the common noise \(z_t\), which captures all
@@ -304,10 +306,62 @@
                         style="max-width: 60%;">
                     <div class="diagram-caption">Figure 1: <strong>Top Left:</strong> the mean-field is a distribution
                         over a (low-dimensional) individual state space. <strong>Top Right:</strong> the common noise
-                        \(z_t\) can be arbitrarily high-dimensional, and is a particular instantiation that is
-                        <strong>common</strong> to all agents. <strong>Bottom Left:</strong> an individual agent is in a
-                        certain state \(s_t\), takes an action \(a_t\), and transitions to a new state, additionally
+                        \(z_t\) is <strong>common</strong> to all agents and can be arbitrarily high-dimensional.
+                        <strong>Bottom Left:</strong> an agent in a
+                        certain state \(s_t\) takes an action \(a_t\), and transitions to a new state \(s_{t+1}\)
                         conditioned on the aggregate state \((\mu_t, z_t)\).
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Analytic vs. Sample-Based Mean-Field Updates</h2>
+            Keeping track of the mean-field distribution is a key challenge in MFGs: the mean-field must be updated at
+            every time-step. To main approaches are used to update the mean-field.
+
+            <p>
+                <strong>Analytic Mean-Field Update</strong> <br>
+                Analytic mean-field updates use white-box access to individual state transition dynamics to exactly
+                compute the next mean-field distribution:
+            <div class="math-box">
+                <div class="math-box-title">Analytic Mean-Field Update (Fully Observable)</div>
+                <div>
+                    $$\mu_{t+1}(s_{t+1}) = \iint \mathcal{T}(s_{t+1}\mid s_t, a_t, \mu_t, z_t)\pi(a_t \mid s_t,
+                    \mu_t,
+                    z_t)\mu_t(s_t)\mathrm{d}a_t\mathrm{d}s_t$$
+                </div>
+            </div>
+            Or, in vector-matrix form:
+            <div>
+                $$\boldsymbol{\mu}_{t+1} = {\mathbf{A}^\pi_{\mu_t, z_t}}^\top\boldsymbol{\mu}_t$$
+            </div>
+            Note that, to remain tractable, this requires low-dimensional individual state and action spaces and
+            relatively sparse transition operators. In practice, and where possible, most MFG libraries use analytic
+            mean-field updates.
+            </p>
+
+            <p>
+                <strong>Sample-Based Mean-Field Update</strong> <br>
+                Sample-based methods repeatedly re-approximate the mean-field distribution based on a <strong>population
+                    of agents</strong>:
+            <div>
+                $$ \boldsymbol{\mu}_t(s) \approx \frac{1}{N} \sum_{i = 1}^{N} \delta( s
+                -{\textcolor{red}{s_{i,t}}}) $$
+            </div>
+            </p>
+
+            <p>
+                <strong>Function-Approximation for Mean-Field Updates</strong> <br>
+                A final approach is to use learn a function that can approximate the analytic mean-field update.
+            </p>
+
+            <div class="item-block">
+                <div class="diagram-container">
+                    <img src="mean_field_update.png" alt="Analytic vs. Sample Based Mean Field Update" class="diagram"
+                        style="max-width: 70%;">
+                    <div class="diagram-caption">Figure 2: <strong>Top:</strong> Analytic mean-field update.
+                        <strong>Bottom:</strong> Sample-based mean-field update.
                     </div>
                 </div>
             </div>
@@ -317,79 +371,88 @@
             <h2>Dynamic Programming, Reinforcement Learning &amp; Hybrid Structural Methods</h2>
             <div class="item-block">
                 <p>
-                    In MFGs with common noise, the policy is usually updated by computing the value associated with the
-                    current policy and then taking a greedy step to improve that policy. This is a
-                    <strong>sample-based</strong> update, and is computationally tractable.
+                    In MFGs with common noise, the policy is usually updated by <strong>computing the value</strong>
+                    associated with the
+                    current policy and then taking a greedy step to improve that policy.
                 </p>
 
                 <div class="taxonomy-box">
-                    <div class="taxonomy-box-title">1. Dynamic Programming (DP)</div>
-                    Leverages full access to both the individual dynamics \(\mathcal{T}\) and common noise dynamics
-                    \(\Xi\). It evaluates exact expected returns through the infinite-dimensional <strong>Master
+                    <div class="taxonomy-box-title">Dynamic Programming (DP)</div>
+                    Ideally, since transition dynamics are known by modelling assumption, we would use DP to compute the
+                    value function.
+                    DP leverage full access full access to the model i.e. both the individual state dynamics
+                    $\mathcal{T}(s'\mid s, a, \mu, z)$ and common noise
+                    dynamics $\Xi(z'\mid z)$.
+                    The induced mean-field sequence is computed analytically:
+                    <div>
+                        $$ {\boldsymbol{\mu}' = {\mathbf{A}}^{\pi}_{\mu, z}}^\top \boldsymbol{\mu} $$
+                    </div>
+
+                    It evaluates exact expected returns through the infinite-dimensional <strong>Master
                         Equation</strong>:
                     <div>
                         $$ V(s,\boldsymbol{\mu},z) = \mathbb{E}_{a \sim \pi} \left[ R(s,a, \boldsymbol{\mu},z) +
                         \gamma \mathbb{E}_{s' \sim \mathcal{T}, z' \sim \Xi} \left[V(s',\boldsymbol{\mu}',
                         z')\right]\right] $$
                     </div>
-                    State-vectorized: \(\mathbf{v}_{\boldsymbol{\mu}, z} = \left[\boldsymbol{\Pi}_{\boldsymbol{\mu}, z}
+                    Or, in state-vectorised form: \(\mathbf{v}_{\boldsymbol{\mu}, z} =
+                    \left[\boldsymbol{\Pi}_{\boldsymbol{\mu}, z}
                     \odot \mathbf{R}_{\boldsymbol{\mu}, z}\right]\mathbf{1} + \gamma \mathbf{A}_{\boldsymbol{\mu}, z}
-                    \mathbb{E}_{z' \sim \Xi}\left[\mathbf{v}_{\boldsymbol{\mu}', z'} \right]\). DP eliminates sample
-                    variance but quickly becomes computationally intractable.
+                    \mathbb{E}_{z' \sim \Xi}\left[\mathbf{v}_{\boldsymbol{\mu}', z'} \right]\). where
+                    $\mathbf{v}_{\boldsymbol{\mu}, z}$ is an $\lvert \mathcal{S}\rvert$-length vector with the values
+                    $V(s,
+                    \boldsymbol{\mu}, z)$ of each individual state $s \in \mathcal{S}$, and
+                    $\boldsymbol{\Pi}_{\boldsymbol{\mu}, z}$ and
+                    $\mathbf{R}_{\boldsymbol{\mu}, z}$ are $| \mathcal{S} | \times | \mathcal{A} |$ matrices whose $(s,
+                    a)^\text{th}$
+                    elements are $\pi(a \mid s, \boldsymbol{\mu}, z)$ and $R(s,a,\boldsymbol{\mu},z)$ respectively. Note
+                    that premultiplying
+                    by $\mathbf{A}^\pi_{\boldsymbol{\mu}, z}$ computes the expectation over next states.
+
+                    By evaluating the policy using exact expected returns, the Bellman equation or
+                    \emph{Master Equation} eliminates sample variance. But, in practice, integrating
+                    over all possible realisations of the mean-field due to different realisations of the common noise
+                    renders DP intractable.
                 </div>
 
                 <div class="taxonomy-box">
-                    <div class="taxonomy-box-title">2. Reinforcement Learning (RL)</div>
-                    Treats transitions as a black box and relies purely on <strong>sampling</strong>. The policy is
-                    evaluated along sample pathways:
+                    <div class="taxonomy-box-title">Reinforcement Learning (RL)</div>
+                    RL treats transitions as a black box and relies purely on <strong>Monte Carlo samples</strong> for
+                    policy evaluation. Since transition dynamics are treated as a black-box, rather than computing the
+                    analytic mean-field update, the mean-field is repeatedly re-approximated using
+                    sample-based methods:
+                    <div>
+                        $$ \boldsymbol{\mu}_t(s) \approx \frac{1}{N} \sum_{i = 1}^{N} \delta( s
+                        -{\textcolor{red}{s_{i,t}}}) $$
+                    </div>
+                    The value of the policy is approximated along sample pathways:
                     <div>
                         $$ V(s_{i,t},\boldsymbol{\mu}_t,z_t) = R(s_{i,t},a_{i,t}, \boldsymbol{\mu}_t,z_t) + \gamma
                         V(s_{i,t+1},\boldsymbol{\mu}_{t+1},z_{t+1}) $$
                     </div>
-                    RL scales to huge spaces using neural networks but suffers from exceptionally <strong>high
-                        variance</strong>.
+                    By treating environment dynamics as a black box, RL based methods scale to more complex settings,
+                    such as learning under unknown
+                    dynamics, intractably large individual state or action spaces, dense transition operators, and in
+                    partially-observable settings where the observation function depends on the individual state. But,
+                    being fully sample-based, they suffer from high-variance value estimates, and hence high-variance
+                    policy updates.
                 </div>
 
                 <div class="taxonomy-box">
-                    <div class="taxonomy-box-title">3. Hybrid Structural Methods (HSMs)</div>
-                    Recent <strong>Hybrid Structural Methods</strong> make use of known structure (known under any
-                    modeling assumption) and low-dimensional individual state-spaces to compute the exact expectation
-                    over individual state transitions, thereby lowering variance. However, to maintain tractability,
-                    they sample common noise:
+                    <div class="taxonomy-box-title">Hybrid Structural Methods (HSMs)</div>
+                    Recent <strong>Hybrid Structural Methods</strong> are an intermediary between DP and RL: they make
+                    use of known structure and low-dimensional individual state-spaces to compute the exact expectation
+                    over individual state transitions, thereby reducing variance in policy updates. However, to maintain
+                    tractability, they sample common noise:
                     <div>
                         $$ V(s,\boldsymbol{\mu}_t,z_t) = \mathbb{E}_{a \sim \pi} \left[ R(s,a, \boldsymbol{\mu}_t,z_t)
                         + \gamma \mathbb{E}_{s' \sim \mathcal{T}}
                         \left[V(s',\boldsymbol{\mu}_{t+1},z_{t+1})\right]\right] $$
                     </div>
-                    State-vectorized: \(\mathbf{v}_{\boldsymbol{\mu}_t, z_t} =
+                    In state-vectorised form: \(\mathbf{v}_{\boldsymbol{\mu}_t, z_t} =
                     \left[\boldsymbol{\Pi}_{\boldsymbol{\mu}_t, z_t} \odot \mathbf{R}_{\boldsymbol{\mu}_t,
                     z_t}\right]\mathbf{1} + \gamma \mathbf{A}_{\boldsymbol{\mu}_t, z_t}
                     \left[\mathbf{v}_{{\boldsymbol{\mu}}_{t+1}, z_{t+1}} \right]\).
-                </div>
-
-                <p>
-                    <strong>Analytic vs. Sample-Based Mean-Field Updates:</strong> A structural method's core advantage
-                    stems from avoiding noisy multi-agent sampling. Instead of re-approximating density across sample
-                    paths, an <strong>Analytic Update</strong> uses a white-box matrix "Pushforward" wrapper to
-                    transition the vector distribution exactly:
-                </p>
-            </div>
-
-            <div class="math-box">
-                <div class="math-box-title">Analytic Mean-Field Update (Fully Observable)</div>
-                <div>
-                    $$\mu_{t+1}(s_{t+1}) = \iint \mathcal{T}(s_{t+1}\mid s_t, a_t, \mu_t, z_t)\pi(a_t \mid s_t, \mu_t,
-                    z_t)\mu_t(s_t)\mathrm{d}a_t\mathrm{d}s_t$$
-                </div>
-                In vector-matrix form: \(\boldsymbol{\mu}_{t+1} = {\mathbf{A}^\pi_{\mu_t, z_t}}^\top\boldsymbol{\mu}_t\)
-            </div>
-
-            <div class="item-block">
-                <div class="diagram-container">
-                    <img src="mean_field_update.png" alt="Analytic vs Sample Based Mean Field Update" class="diagram"
-                        style="max-width: 70%;">
-                    <div class="diagram-caption">Figure 2: Exact mathematical pushforward transitions versus noisy
-                        sample-based particle rollouts.</div>
                 </div>
             </div>
         </section>
@@ -398,37 +461,33 @@
             <h2>Partially Observable Mean Field Games with Common Noise</h2>
             <div class="item-block">
                 <p>
-                    Despite achieving superior <strong>sample efficiency</strong>, HSMs have been historically confined
-                    to <strong>fully observable settings</strong>, where every agent perfectly knows the global
-                    population distribution \(\mu_t\). In realistic economic networks or structural markets, this
-                    assumption fails; agents face <strong>partial observability</strong>.
+                    The issue is extending HSMs and analytic mean-field updates to partially observable settings. In
+                    partially observable settings, there is information in <strong>histories</strong>, such that agents
+                    should take an action conditioned on their
+                    Individual-Action-Observation Histories (IAOHs) $\tau_t := (s_0, o_0, a_0, s_1, o_1, a_1, ..., s_t,
+                    o_t) \in \mathcal{H}_t
+                    :=(\mathcal{S} \times \mathcal{O} \times \mathcal{A})^t \times \mathcal{S} \times \mathcal{O}
                 </p>
                 <p>
-                    Extending HSMs to partially observable settings causes an immediate <strong>curse of
-                        dimensionality</strong>. Because agents select actions based on their
-                    Individual-Action-Observation Histories (IAOH) \(\tau_t\), calculating the update requires
-                    maintaining an aggregate state matrix distribution \(\tilde{\mu}_t\) over the entire history space
-                    \(\mathcal{H}_t\):
+                    But, this means that computing the analytic mean-field update requires keeping track of not just the
+                    current mean-field ($\mu_t$, a distribution over $\mathcal{S}$), but a
+                    distribution $\tilde{\mu}_t$ over $\mathcal{H}_t$:
+                <div class="math-box">
+                    <div class="math-box-title">Analytic Mean-Field Update (Partially Observable)</div>
+                    <div>
+                        $$\mu_{t+1}(s_{t+1}) = \iint \mathcal{T}(s_{t+1} \mid s_t, a_t, \mu_t, z_t)\pi(a_t \mid \tau_t)
+                        \tilde{\mu}_t(\tau_t) \mathrm{d}a_t \mathrm{d}\tau_t$$
+                    </div>
+                    <div>
+                        $$\tilde{\mu}_{t+1}(\tau_{t+1}) = \mathcal{U}(o_{t+1} \mid s_{t+1}, \mu_{t+1},
+                        z_{t+1})\mathcal{T}(s_{t+1} \mid s_t, a_t, \mu_t, z_t)\pi(a_t \mid \tau_t)
+                        \tilde{\mu}_t(\tau_t)$$
+                    </div>
+                </div>
                 </p>
-            </div>
-
-            <div class="math-box">
-                <div class="math-box-title">Analytic Mean-Field Update (Partially Observable)</div>
-                <div>
-                    $$\mu_{t+1}(s_{t+1}) = \iint \mathcal{T}(s_{t+1} \mid s_t, a_t, \mu_t, z_t)\pi(a_t \mid \tau_t)
-                    \tilde{\mu}_t(\tau_t) \mathrm{d}a_t \mathrm{d}\tau_t$$
-                </div>
-                <div>
-                    $$\tilde{\mu}_{t+1}(\tau_{t+1}) = \mathcal{U}(o_{t+1} \mid s_{t+1}, \mu_{t+1},
-                    z_{t+1})\mathcal{T}(s_{t+1} \mid s_t, a_t, \mu_t, z_t)\pi(a_t \mid \tau_t) \tilde{\mu}_t(\tau_t)$$
-                </div>
-            </div>
-
-            <div class="item-block">
-                <p>
-                    Because the space of individual observation paths \(\mathcal{H}_t\) grows exponentially with time,
-                    propagating these equations explicitly becomes totally intractable, breaking down the unified state
-                    mesh required by HSMs.
+                The issue is that <strong>the number of possible histories grows exponentially with
+                    time</strong> such that updating the mean-field and evaluating the policy would require enumerating
+                an exponentially branching history tree.
                 </p>
             </div>
         </section>
@@ -437,37 +496,85 @@
             <h2>Recurrent Structural Policy Gradient</h2>
             <div class="item-block">
                 <p>
-                    Our framework, <strong>Recurrent Structural Policy Gradient (RSPG)</strong>, breaks this
-                    computational bottleneck under public information.
+                    Our key insight is that, under public information, memory can be
+                    restricted to the history of shared aggregate observations, such that policies condition on $s_t,
+                    o_{0:t}$ rather than $\tau_t$. Since agents directly observe their
+                    individual state, they only need to maintain a <strong>belief</strong> in the aggregate
+                    state. This means that
+                    conditioning on individual
+                    histories provides no additional information.
                 </p>
                 <p>
-                    <strong>The Structural Principle:</strong> Because private states are known and public metadata
-                    observations are shared across the system, agents only need to maintain a recurrent <strong>belief
-                        distribution</strong> over the aggregate common noise state. Long-term individual memory can
-                    safely be restricted strictly to the <strong>history of shared public observations</strong>
-                    \(o_{0:t}\). This ensures that the infinite branching tree of individual trajectories collapses back
-                    down into a <strong>single, shared historical trajectory</strong>, preserving the exact low-variance
-                    benefits of analytic structural methods.
+                    The main benefit is that, because agents share a single history, the mean-field remains a
+                    distribution over the fixed
+                    state space, rather than over an exponentially growing history space:
+                <div class="math-box">
+                    <div class="math-box-title">Analytic Mean-Field Update (Partially Observable, Recurrent Structural
+                        Policy Gradient)</div>
+                    <div>
+                        $$\mu_{t+1}(s_{t+1}) = \iint \mathcal{T}(s_{t+1}\mid s_t, a_t, \mu_t, z_t)\pi(a_t \mid s_t,
+                        o_{0:t})\mu_t(s_t)\mathrm{d}a_t\mathrm{d}s_t$$
+                    </div>
+                </div>
                 </p>
                 <p>
-                    <strong>The Practical Implementation:</strong> We built <strong>MFAX</strong>, an open-source,
-                    highly accelerated JAX framework to translate this concept into software. MFAX harnesses functional
-                    programming primitives like <code>jax.vmap</code> to perform fast piecewise-linear density
-                    interpolation over structural grids, and utilizes <code>jax.lax.scan</code> to map recurrent history
-                    gradients sequentially over long operational horizons.
+                    Although the length of this
+                    shared history grows
+                    linearly with time, in practice, it is not stored explicitly, but encoded in the hidden state of a
+                    recurrent neural
+                    network. In contrast, conditioning on IAOHs would require distinct hidden states for exponentially
+                    many histories.
                 </p>
 
                 <div class="diagram-container">
                     <img src="rspg_architecture.png" alt="RSPG Architecture" class="diagram" style="max-width: 70%;">
-                    <div class="diagram-caption">Figure 3: RSPG structural design isolating individual recurrent updates
-                        on top of a single shared observation history stream.</div>
+                    <div class="diagram-caption">Figure 3: RSPG architecture: only the observations of the aggregate
+                        state are fed into the recurrent encoder such that the hidden state is independent of the
+                        individual state. This means that all agents share the same recurrent embedding at each
+                        timestep. In practice, we compute this embedding once per timestep and broadcast it to all
+                        states, so that the additional cost of
+                        RSPG over Structural Policy Gradient (a memoryless HSM) is a single GRU update per timestep,
+                        independent of the number of states. For continuous actions, we parameterise an underlying
+                        continuous distribution to maintain ordinality in the action space.</div>
                 </div>
-
                 <p>
-                    By structuring policy gradients around shared public observation pipelines, RSPG bridges
-                    history-aware multi-agent systems and exact structural reinforcement learning, enabling fast,
-                    low-variance convergence in highly complex structural games.
+                    <strong>In this way, RSPG is a history-aware HSM. This means that, while learning a
+                        history-dependent policy that leads to more realistic agent behaviour in partially observable
+                        settings, it still benefits from both low-variance updates.</strong>
                 </p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>MFAX: A JAX-Based Framework for MFGs</h2>
+            <div class="item-block">
+                <p>
+                    Finally, I'll introduce <strong>MFAX</strong>, our open-source, JAX-based framework for MFGs. We
+                    designed MFAX to encourage more research into MFGs. Unlike existing libraries, MFAX:
+                </p>
+                <ul>
+                    <li>
+                        <strong>Supports both analytic and sample-based mean-field updates</strong>, thereby allowing
+                        implementation of different MFG problem settings (e.g., low vs. high-dimensional individual
+                        state
+                        spaces).
+                    </li>
+                    <li>
+                        <strong>Distinguishes between HSMs</strong>, with white-box access to individual state
+                        transition
+                        dynamics, and <strong>RL-based methods</strong>, without access to individual state transition
+                        dynamics.
+                    </li>
+                    <li>
+                        <strong>Accelerates analytic mean-field updates</strong> by using a functional representation of
+                        matrix
+                        multiplication.
+                    </li>
+                    <li>
+                        <strong>Supports more complex environments</strong>, such as those with common noise, partial
+                        observability, and multiple initial mean-field distributions.
+                    </li>
+                </ul>
             </div>
         </section>
 

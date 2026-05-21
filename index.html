@@ -461,7 +461,7 @@
                     <div>
                         $$\tilde{\mu}_{t+1}(\tau_{t+1}) = \mathcal{U}(o_{t+1} \mid s_{t+1}, \mu_{t+1},
                         z_{t+1})\mathcal{T}(s_{t+1} \mid s_t, a_t, \mu_t, z_t)\pi(a_t \mid \tau_t)
-                        \tilde{\mu}_t(\tau_t)$$
+                        \tilde{\mu}_t(\tau_t)$$.
                     </div>
                 </div>
                 <p>
@@ -491,7 +491,7 @@
                         Policy Gradient)</div>
                     <div>
                         $$\mu_{t+1}(s_{t+1}) = \iint \mathcal{T}(s_{t+1}\mid s_t, a_t, \mu_t, z_t)\pi(a_t \mid s_t,
-                        o_{0:t})\mu_t(s_t)\mathrm{d}a_t\mathrm{d}s_t$$
+                        o_{0:t})\mu_t(s_t)\mathrm{d}a_t\mathrm{d}s_t$$.
                     </div>
                 </div>
                 <p>
@@ -513,7 +513,7 @@
                         ordinality in the action space.</div>
                 </div>
                 <p>
-                    <strong>In this way, RSPG is a history-aware HSM. This means that, while learning a
+                    In this way, <strong>RSPG is a history-aware HSM. This means that, while learning a
                         history-dependent policy that leads to more realistic agent behaviour in partially observable
                         settings, it still benefits from low-variance updates.</strong>
                 </p>
@@ -524,8 +524,8 @@
             <h2>MFAX: A JAX-Based Framework for MFGs</h2>
             <div class="item-block">
                 <p>
-                    Finally, I'll introduce <strong>MFAX</strong>, our open-source, JAX-based framework for MFGs. We
-                    designed MFAX to encourage more research into MFGs. Unlike existing libraries, MFAX:
+                    Finally, I'll introduce <strong>MFAX</strong>, an open-source, JAX-based framework for MFGs designed
+                    to encourage more research into different MFG problem settings. Unlike existing libraries, MFAX:
                 </p>
                 <ul>
                     <li>
@@ -534,17 +534,17 @@
                         state spaces).
                     </li>
                     <li>
-                        <strong>Distinguishes between HSMs</strong>, with white-box access to individual state
-                        transition dynamics, and <strong>RL-based methods</strong>, without access to individual state
-                        transition
-                        dynamics.
+                        <strong>Distinguishes between HSMs and RL-based methods</strong>: unlike RL-based methods, HSMs
+                        have white-box access to
+                        individual state
+                        transition dynamics.
                     </li>
                     <li>
                         <strong>Accelerates analytic mean-field updates</strong> by using a functional representation of
                         matrix multiplication.
                     </li>
                     <li>
-                        <strong>Supports more complex environments</strong>, such as those with common noise, partial
+                        <strong>Supports more complex environments</strong>, such as with common noise, partial
                         observability, and multiple initial mean-field distributions.
                     </li>
                 </ul>

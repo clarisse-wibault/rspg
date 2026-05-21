@@ -384,7 +384,7 @@
                     $\mathcal{T}(s'\mid s, a, \mu, z)$ and common noise dynamics $\Xi(z'\mid z)$.
                     The induced mean-field sequence is computed analytically:
                     <div>
-                        $$ {\boldsymbol{\mu}' = {\mathbf{A}}^{\pi}_{\mu, z}}^\top \boldsymbol{\mu} $$
+                        $$ {\boldsymbol{\mu}' = {\mathbf{A}}^{\pi}_{\mu, z}}^\top \boldsymbol{\mu}.$$
                     </div>
 
                     It evaluates exact expected returns through the infinite-dimensional <strong>Master
@@ -407,7 +407,7 @@
                     policy evaluation. Since transition dynamics are treated as a black-box, rather than computing the
                     analytic mean-field update, the mean-field is repeatedly re-approximated using sample-based methods:
                     <div>
-                        $$ \boldsymbol{\mu}_t(s) \approx \frac{1}{N} \sum_{i = 1}^{N} \delta( s - s_{i,t}) $$
+                        $$ \boldsymbol{\mu}_t(s) \approx \frac{1}{N} \sum_{i = 1}^{N} \delta( s - s_{i,t}).$$
                     </div>
                     The value of the policy is approximated along sample pathways:
                     <div>
@@ -549,7 +549,7 @@
                     </li>
                 </ul>
                 The Google Colab linked at the top of this post steps some of MFAX's key elements, such as how Analytic
-                Mean-Field Updates are implemented to support HSMs such as RSPG.
+                Mean-Field Updates are implemented to support HSMs like RSPG.
             </div>
         </section>
 

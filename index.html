@@ -336,7 +336,7 @@
 
                 <p>Or, in vector-matrix form:</p>
                 <div style="margin-bottom: 16px;">
-                    $$\boldsymbol{\mu}_{t+1} = {\mathbf{A}^\pi_{\mu_t, z_t}}^\top\boldsymbol{\mu}_t$$
+                    $$\boldsymbol{\mu}_{t+1} = {\mathbf{A}^\pi_{\mu_t, z_t}}^\top\boldsymbol{\mu}_t.$$
                 </div>
 
                 <p>
@@ -351,7 +351,7 @@
                     <strong>population of agents</strong>:
                 </p>
                 <div style="margin-bottom: 16px;">
-                    $$ \boldsymbol{\mu}_t(s) \approx \frac{1}{N} \sum_{i = 1}^{N} \delta( s - s_{i,t}) $$
+                    $$ \boldsymbol{\mu}_t(s) \approx \frac{1}{N} \sum_{i = 1}^{N} \delta( s - s_{i,t}).$$
                 </div>
 
                 <p style="margin-top: 16px;">
@@ -392,7 +392,7 @@
                     <div>
                         $$ V(s,\boldsymbol{\mu},z) = \mathbb{E}_{a \sim \pi} \left[ R(s,a, \boldsymbol{\mu},z) +
                         \gamma \mathbb{E}_{s' \sim \mathcal{T}, z' \sim \Xi} \left[V(s',\boldsymbol{\mu}',
-                        z')\right]\right] $$.
+                        z')\right]\right]. $$
                     </div>
                     <br>
                     By evaluating the policy using exact expected returns, the Bellman equation or
@@ -412,7 +412,7 @@
                     The value of the policy is approximated along sample pathways:
                     <div>
                         $$ V(s_{i,t},\boldsymbol{\mu}_t,z_t) = R(s_{i,t},a_{i,t}, \boldsymbol{\mu}_t,z_t) + \gamma
-                        V(s_{i,t+1},\boldsymbol{\mu}_{t+1},z_{t+1}) $$
+                        V(s_{i,t+1},\boldsymbol{\mu}_{t+1},z_{t+1}). $$
                     </div>
                     By treating environment dynamics as a black box, RL-based methods scale to more complex settings,
                     such as learning under unknown dynamics, intractably large individual state or action spaces, dense
@@ -431,7 +431,7 @@
                     <div>
                         $$ V(s,\boldsymbol{\mu}_t,z_t) = \mathbb{E}_{a \sim \pi} \left[ R(s,a, \boldsymbol{\mu}_t,z_t)
                         + \gamma \mathbb{E}_{s' \sim \mathcal{T}}
-                        \left[V(s',\boldsymbol{\mu}_{t+1},z_{t+1})\right]\right] $$.
+                        \left[V(s',\boldsymbol{\mu}_{t+1},z_{t+1})\right]\right]. $$
                     </div>
                 </div>
             </div>
@@ -461,7 +461,7 @@
                     <div>
                         $$\tilde{\mu}_{t+1}(\tau_{t+1}) = \mathcal{U}(o_{t+1} \mid s_{t+1}, \mu_{t+1},
                         z_{t+1})\mathcal{T}(s_{t+1} \mid s_t, a_t, \mu_t, z_t)\pi(a_t \mid \tau_t)
-                        \tilde{\mu}_t(\tau_t)$$.
+                        \tilde{\mu}_t(\tau_t).$$
                     </div>
                 </div>
                 <p>
@@ -491,7 +491,7 @@
                         Policy Gradient)</div>
                     <div>
                         $$\mu_{t+1}(s_{t+1}) = \iint \mathcal{T}(s_{t+1}\mid s_t, a_t, \mu_t, z_t)\pi(a_t \mid s_t,
-                        o_{0:t})\mu_t(s_t)\mathrm{d}a_t\mathrm{d}s_t$$.
+                        o_{0:t})\mu_t(s_t)\mathrm{d}a_t\mathrm{d}s_t.$$
                     </div>
                 </div>
                 <p>

@@ -289,13 +289,14 @@
                     </p>
 
                     <p>
-                        Therefore, the analytic mean-field update conditions on a particular realisation of the common
-                        noise $z_t$:
+                        The analytic mean-field update conditions on a particular realisation of the common
+                        noise:
                     </p>
                     <div class="math-box">
                         <div class="math-box-title">Analytic Mean-Field Update (Fully Observable)</div>
                         <div>
-                            $$\mu_{t+1}(s_{t+1}) = \iint \mathcal{T}(s_{t+1}\mid s_t, a_t, \mu_t, z_t)\pi(a_t \mid s_t,
+                            $$\mu_{t+1}(s_{t+1}) = \int_{\mathcal{S}} \int_{\mathcal{A}} \mathcal{T}(s_{t+1}\mid s_t,
+                            a_t, \mu_t, z_t)\pi(a_t \mid s_t,
                             \mu_t, z_t)\mu_t(s_t)\mathrm{d}a_t\mathrm{d}s_t$$
                         </div>
                     </div>
@@ -305,7 +306,8 @@
                     </div>
 
                     <p>
-                        In partially observable MFGs, agents must <strong>infer</strong> the aggregate state $(\mu_t,
+                        In <strong>partially observable</strong> MFGs, agents must <strong>infer</strong> the aggregate
+                        state $(\mu_t,
                         z_t)$ rather than observing it directly. As summarised by the following assumption, in many
                         applications of interest, agents only receive a <strong>shared partial
                             observation</strong> of the aggregate
@@ -346,19 +348,29 @@
                     associated with the current policy and then taking a greedy step to improve that policy.
                 </p>
 
+                <p>
+                    We now briefly describe <strong>policy evaluation</strong> using Dynamic Programming (DP),
+                    Reinforcement Learning
+                    (RL) and Hybrid Structural
+                    Methods (HSMs), which
+                    respectively leverage full, no or partial knowledge of the model.
+                </p>
+
                 <div class="taxonomy-box">
                     <div class="taxonomy-box-title">Dynamic Programming (DP)</div>
                     Ideally, since transition dynamics are known by modelling assumption, we would use DP to compute the
                     value. DP leverages full access to the model i.e. both the individual state dynamics
                     $\mathcal{T}(s'\mid s, a, \mu, z)$ and common noise dynamics $\Xi(z'\mid z)$.
                     <br>
-                    White-box access to individual-state transition dynamics means that the induced mean-field
+                    <strong>White-box</strong> access to individual-state transition dynamics means that the induced
+                    mean-field
                     sequence is computed analytically:
                     <div>
                         $$ {\boldsymbol{\mu}' = {\mathbf{A}}^{\pi}_{\mu, z}}^\top \boldsymbol{\mu}.$$
                     </div>
 
-                    It evaluates exact expected returns through the infinite-dimensional <strong>Master
+                    It evaluates exact expected returns through the infinite-dimensional Bellman equation or
+                    <strong>Master
                         Equation</strong>:
                     <div>
                         $$ V(s,\boldsymbol{\mu},z) = \mathbb{E}_{a \sim \pi} \left[ R(s,a, \boldsymbol{\mu},z) +
@@ -366,36 +378,39 @@
                         z')\right]\right]. $$
                     </div>
                     <br>
-                    By evaluating the policy using exact expected returns, the Bellman equation or
-                    <em>Master Equation</em> eliminates sample variance. But, in practice, integrating
+                    By evaluating the policy using exact expected returns, the
+                    Master Equation <strong>eliminates sample variance</strong>. But, in practice, integrating
                     over all possible realisations of the mean-field due to different realisations of the common noise
-                    renders DP intractable.
+                    renders DP <strong>intractable</strong>.
                 </div>
 
                 <div class="taxonomy-box">
                     <div class="taxonomy-box-title">Reinforcement Learning (RL)</div>
-                    RL treats transitions as a black box and relies purely on <strong>Monte Carlo samples</strong> for
+                    RL treats transitions as a <strong>black-box</strong> and relies purely on <strong>Monte Carlo
+                        samples</strong> for
                     policy evaluation.
                     <br>
                     Since transition dynamics are treated as a black-box, rather than computing the
                     analytic mean-field update, the mean-field is repeatedly reapproximated using a <strong>sample-based
                         method</strong> i.e.
-                    maintaining a <strong>population of agents</strong>
+                    maintaining a <strong>population of agents</strong>:
                     <div>
                         $$ \boldsymbol{\mu}_t(s) \approx \frac{1}{N} \sum_{i = 1}^{N} \delta( s - s_{i,t}),$$
                     </div>
                     or by learning a function that can approximate the analytic mean-field update.
                     <br>
-                    The value of the policy is approximated along sample pathways:
+                    The value of the policy is <strong>approximated</strong> along sample pathways:
                     <div>
-                        $$ V(s_{i,t},\boldsymbol{\mu}_t,z_t) = R(s_{i,t},a_{i,t}, \boldsymbol{\mu}_t,z_t) + \gamma
-                        V(s_{i,t+1},\boldsymbol{\mu}_{t+1},z_{t+1}). $$
+                        $$ \hat{V}(s_{i,t},\boldsymbol{\mu}_t,z_t) = R(s_{i,t},a_{i,t}, \boldsymbol{\mu}_t,z_t) + \gamma
+                        \hat{V}(s_{i,t+1},\boldsymbol{\mu}_{t+1},z_{t+1}). $$
                     </div>
-                    By treating environment dynamics as a black box, RL-based methods scale to more complex settings,
+                    By treating environment dynamics as a black box, RL-based methods <strong>scale</strong> to more
+                    complex settings,
                     such as learning under unknown dynamics, intractably large individual state or action spaces, dense
                     transition operators, and in
                     partially-observable settings where the observation function depends on the individual state. But,
-                    being fully sample-based, they suffer from high-variance value estimates, and hence high-variance
+                    being fully sample-based, they suffer from <strong>high-variance</strong> value estimates, and hence
+                    high-variance
                     policy updates.
                 </div>
 
@@ -403,15 +418,20 @@
                     <div class="taxonomy-box-title">Hybrid Structural Methods (HSMs)</div>
                     Recent Hybrid Structural Methods (HSMs) are an <strong>intermediary</strong> between DP and RL: they
                     make
-                    use of known structure and low-dimensional individual state and action spaces to compute the exact
-                    expectation
-                    over individual state transitions, thereby reducing variance in policy updates. However, to maintain
-                    tractability, they sample common noise:
+                    use of known structure and low-dimensional individual state and action spaces to <strong>compute the
+                        exact
+                        expectation
+                        over individual state transitions</strong>, thereby reducing variance in policy updates.
+                    However, to maintain
+                    tractability, they <strong>sample common noise</strong>:
                     <div>
-                        $$ V(s,\boldsymbol{\mu}_t,z_t) = \mathbb{E}_{a \sim \pi} \left[ R(s,a, \boldsymbol{\mu}_t,z_t)
+                        $$ \hat{V}(s,\boldsymbol{\mu}_t,z_t) = \mathbb{E}_{a \sim \pi} \left[ R(s,a,
+                        \boldsymbol{\mu}_t,z_t)
                         + \gamma \mathbb{E}_{s' \sim \mathcal{T}}
-                        \left[V(s',\boldsymbol{\mu}_{t+1},z_{t+1})\right]\right]. $$
+                        \left[\hat{V}(s',\boldsymbol{\mu}_{t+1},z_{t+1})\right]\right]. $$
                     </div>
+                    This means that HSMs are <strong>lower-variance</strong> than RL-based methods, but
+                    <strong>tractable</strong>, unlike DP.
                 </div>
             </div>
         </section>
@@ -428,8 +448,8 @@
                 </p>
                 <p>
                     But, this means that computing the analytic mean-field update requires keeping track of not just the
-                    current mean-field ($\mu_t$, a distribution over $\mathcal{S}$), but a distribution $\tilde{\mu}_t$
-                    over $\mathcal{H}_t$:
+                    current mean-field ($\mu_t$, a distribution over $\mathcal{S}$), but a distribution
+                    over histories ($\tilde{\mu}_t$, a distribution over $\mathcal{H}_t$):
                 </p>
                 <div class="math-box">
                     <div class="math-box-title">Analytic Mean-Field Update (Partially Observable)</div>
